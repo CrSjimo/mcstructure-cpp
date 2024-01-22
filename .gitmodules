@@ -1,0 +1,3 @@
+[submodule "lib/libnbtplusplus"]
+	path = lib/libnbtplusplus
+	url = git@github.com:PrismLauncher/libnbtplusplus.git
