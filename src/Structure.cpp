@@ -188,7 +188,7 @@ namespace mcstructure {
                 throw std::exception("Invalid tag: 'block_palette'");
             auto nbtBlockPaletteList = nbtPaletteComp.at("block_palette").as<nbt::tag_list>();
             for (const auto &nbtBlockStateValue: nbtBlockPaletteList) {
-                if (nbtBlockStateValue.get_type() != nbt::tag_type::Compound)
+                if (nbtBlockStateValue.get_type() != nbt::tag_type::Compound && nbtBlockStateValue.get_type() != nbt::tag_type::Null)
                     throw std::exception("Invalid value type of list: 'block_palette'");
                 auto block = BlockState::fromNBT(nbtBlockStateValue.as<nbt::tag_compound>());
                 itList.push_back(structure.m_blockPalette.insert({block, 0}).first);
@@ -205,7 +205,7 @@ namespace mcstructure {
             {
                 auto nbtPrimaryList = nbtBlockIndicesList[0].as<nbt::tag_list>();
                 if (nbtPrimaryList.size() != structure.m_size.volume() ||
-                    nbtPrimaryList.el_type() != nbt::tag_type::Int)
+                        (nbtPrimaryList.el_type() != nbt::tag_type::Int && nbtPrimaryList.el_type() != nbt::tag_type::Null))
                     throw std::exception("Invalid value type of list: 'block_indices[0]'");
                 for (int i = 0; i < nbtPrimaryList.size(); i++) {
                     auto index = int(nbtPrimaryList[i]);
@@ -256,7 +256,7 @@ namespace mcstructure {
             if (!nbtStructureComp.has_key("entities", nbt::tag_type::List))
                 throw std::exception("Invalid tag: 'entities'");
             auto nbtEntityList = nbtStructureComp.at("entities").as<nbt::tag_list>();
-            if (nbtEntityList.el_type() != nbt::tag_type::Compound)
+            if (nbtEntityList.el_type() != nbt::tag_type::Compound && nbtEntityList.el_type() != nbt::tag_type::Null)
                 throw std::exception("Invalid value type of list: 'entities'");
             for (auto &entityValue: nbtEntityList) {
                 structure.m_entities.push_back(entityValue.as<nbt::tag_compound>());

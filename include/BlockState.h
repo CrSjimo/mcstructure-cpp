@@ -130,7 +130,7 @@ namespace mcstructure {
             if (m_states.size() != other.m_states.size())
                 return m_states.size() < other.m_states.size();
 
-            for (auto it = begin(), otherIt = other.begin(); it != end() && otherIt != end(); it++, otherIt++) {
+            for (auto it = begin(), otherIt = other.begin(); it != end() && otherIt != other.end(); it++, otherIt++) {
                 if (it->first != otherIt->first)
                     return it->first < otherIt->first;
                 if (it->second != otherIt->second)

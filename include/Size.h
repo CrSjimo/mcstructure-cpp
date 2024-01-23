@@ -4,7 +4,7 @@
 namespace mcstructure {
 
     struct Size {
-        Size(int x, int y, int z) : x(x), y(x), z(z) {
+        Size(int x, int y, int z) : x(x), y(y), z(z) {
         }
 
         int x;

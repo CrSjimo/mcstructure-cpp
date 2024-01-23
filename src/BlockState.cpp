@@ -28,7 +28,7 @@ namespace mcstructure {
         for (const auto &[key, value]: *this) {
             switch (value.type()) {
                 case BlockState::Value::Boolean:
-                    states.insert(key, static_cast<char>(value.get<bool>()));
+                    states.insert(key, static_cast<int8_t>(value.get<bool>()));
                     break;
                 case BlockState::Value::Integer:
                     states.insert(key, value.get<int>());
