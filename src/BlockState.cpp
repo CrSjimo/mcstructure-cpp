@@ -6,27 +6,6 @@
 #include <tag_string.h>
 
 namespace mcstructure {
-    BlockState::Value::Value(bool b) : p(b) {
-    }
-
-    BlockState::Value::Value(int i) : p(i) {
-    }
-
-    BlockState::Value::Value(std::string s) : p(std::move(s)) {
-    }
-
-    bool BlockState::Value::operator==(const Value &other) const {
-        return p == other.p;
-    }
-
-    BlockState::Value::Type BlockState::Value::type() const {
-        if (std::holds_alternative<bool>(p))
-            return Boolean;
-        if (std::holds_alternative<int>(p))
-            return Integer;
-        else
-            return String;
-    }
 
     BlockState::BlockState(std::string_view name, std::initializer_list<std::pair<const std::string, Value>> states,
                            int version) : m_name(name), m_version(version), m_states(states) {
@@ -44,7 +23,7 @@ namespace mcstructure {
         return m_states.at(key);
     }
 
-    std::unique_ptr<nbt::tag_compound> BlockState::toNBT() const {
+    nbt::tag_compound BlockState::toNBT() const {
         nbt::tag_compound states;
         for (const auto &[key, value]: *this) {
             switch (value.type()) {
@@ -59,12 +38,15 @@ namespace mcstructure {
                     break;
             }
         }
-        std::unique_ptr<nbt::tag_compound> comp(new nbt::tag_compound({
-            {"name", m_name},
-            {"states", std::move(states)},
-            {"version", m_version}
-        }));
-        return std::move(comp);
+        return nbt::tag_compound({
+                                         {"name", m_name},
+                                         {"states", std::move(states)},
+                                         {"version", m_version}
+                                 });
+    }
+
+    bool BlockState::contains(const std::string &key) const {
+        return m_states.contains(key);
     }
 
     BlockState BlockState::fromNBT(const nbt::tag_compound &data) {

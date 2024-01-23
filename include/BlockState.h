@@ -21,14 +21,48 @@ namespace mcstructure {
                 Integer,
                 String,
             };
-            Value(bool b);
-            Value(int i);
-            Value(std::string s);
 
+            Value(bool b) : p(b) {
+            }
 
-            bool operator==(const Value &other) const;
+            Value(int i) : p(i) {
+            }
 
-            [[nodiscard]] Type type() const;
+            Value(std::string s) : p(std::move(s)) {
+            }
+
+            bool operator==(const Value &other) const {
+                return p == other.p;
+            }
+
+            bool operator!=(const Value &other) const {
+                return p != other.p;
+            }
+
+            bool operator<(const Value &other) const {
+                return p < other.p;
+            }
+
+            bool operator>(const Value &other) const {
+                return p > other.p;
+            }
+
+            bool operator<=(const Value &other) const {
+                return p <= other.p;
+            }
+
+            bool operator>=(const Value &other) const {
+                return p >= other.p;
+            }
+
+            [[nodiscard]] Type type() const {
+                if (std::holds_alternative<bool>(p))
+                    return Boolean;
+                if (std::holds_alternative<int>(p))
+                    return Integer;
+                else
+                    return String;
+            }
 
             template<typename T>
             T get() const {
@@ -66,6 +100,8 @@ namespace mcstructure {
 
         [[nodiscard]] Value value(const std::string &key) const;
 
+        [[nodiscard]] bool contains(const std::string &key) const;
+
         using const_iterator = std::map<std::string, Value>::const_iterator;
         using const_reverse_iterator = std::map<std::string, Value>::const_reverse_iterator;
         [[nodiscard]] const_iterator begin() const { return m_states.begin(); }
@@ -77,11 +113,31 @@ namespace mcstructure {
         [[nodiscard]] const_reverse_iterator crbegin() const { return m_states.crbegin(); }
         [[nodiscard]] const_reverse_iterator crend() const { return m_states.crend(); }
 
-        [[nodiscard]] std::unique_ptr<nbt::tag_compound> toNBT() const;
+        [[nodiscard]] nbt::tag_compound toNBT() const;
         static BlockState fromNBT(const nbt::tag_compound &data);
 
         bool operator==(const BlockState &other) const {
-            return m_name == other.m_name && m_version == other.m_version && m_states == other.m_states;
+            return m_name == other.m_name && m_states == other.m_states;
+        }
+
+        bool operator<(const BlockState &other) const {
+            if (m_name != other.m_name)
+                return m_name < other.m_name;
+
+            if (m_version != other.m_version)
+                return m_version < other.m_version;
+
+            if (m_states.size() != other.m_states.size())
+                return m_states.size() < other.m_states.size();
+
+            for (auto it = begin(), otherIt = other.begin(); it != end() && otherIt != end(); it++, otherIt++) {
+                if (it->first != otherIt->first)
+                    return it->first < otherIt->first;
+                if (it->second != otherIt->second)
+                    return it->second < otherIt->second;
+            }
+
+            return false;
         }
 
         static const int COMPATIBILITY_VERSION = 17959425;

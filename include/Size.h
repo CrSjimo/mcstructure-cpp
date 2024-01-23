@@ -10,6 +10,10 @@ namespace mcstructure {
         int x;
         int y;
         int z;
+
+        [[nodiscard]] inline int volume() const {
+            return x * y * z;
+        }
     };
 
 } // mcstructure

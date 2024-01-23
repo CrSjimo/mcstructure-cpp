@@ -50,8 +50,8 @@ set(_src
         src/BlockState.cpp
         src/Structure.cpp)
 
-add_library(${MCSTRUCTURE_NAME} ${_type} ${_src})
-target_link_libraries(${MCSTRUCTURE_NAME} public nbt++)
+add_library(${MCSTRUCTURE_NAME} ${_src})
+target_link_libraries(${MCSTRUCTURE_NAME} PUBLIC nbt++)
 target_include_directories(${MCSTRUCTURE_NAME} PUBLIC include ${CMAKE_CURRENT_BINARY_DIR})
 
 # ----------------------------------
